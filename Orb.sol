@@ -486,10 +486,10 @@ contract OrbContract is ERC20Detailed, Ownable {
             address(this)
         );
       
-        autoLiquidityFund = 0xAFeF14FCFA2eE825C1Cd97388C3f55647eB380E1;
-        treasuryFund = 0xd109372643248e084fFF06535192E5613A708398;
-        orbRiskFreeFund = 0x2FFB7Aa664F8656822f6fd2218c79B64202d47aD;
-        supplyControl = 0xA8B02396920388b926728B3646A27be4a2c66B76;
+        autoLiquidityFund = 0xAFE7B2BAd466d01519e2EEd6f78e7576B8070433;
+        treasuryFund = 0xD6b2faB35c30B0877B4867efc10395dc1fb980B2;
+        orbRiskFreeFund = 0x5Be8242FF5D7047FFdf7B90d0D219CE1091D6446;
+        supplyControl = 0xD7BFbA252f93206df641fC321D4d8D9AA75aEee1;
 
         _allowedFragments[address(this)][address(router)] = uint256(-1);
         pairAddress = pair;
