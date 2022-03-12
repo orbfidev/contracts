@@ -1,14 +1,14 @@
 /**
- *Submitted for verification at BscScan.com on 2022-03-07
+ *Submitted for verification at BscScan.com on 2022-03-13
 */
 
 /*
-RingFi
-Website: https://ringfi.io/
-Twitter: https://twitter.com/ringfiprotocol
-Telegram: https://t.me/ringfi
-Discord: https://discord.com/invite/nfWfZSrm2p
-Whitepaper: https://docs.ringfi.io/
+OrbFi
+Website: https://orbfi.io/
+Twitter: https://twitter.com/orbfiprotocol
+Telegram: TBA
+Discord: https://discord.com/invite/rPp4pzTvss
+Whitepaper: https://docs.orbfi.io/
 */
 
 // SPDX-License-Identifier: Unlicensed
@@ -405,15 +405,15 @@ abstract contract ERC20Detailed is IERC20 {
     }
 }
 
-contract RingContract is ERC20Detailed, Ownable {
+contract OrbContract is ERC20Detailed, Ownable {
 
     using SafeMath for uint256;
     using SafeMathInt for int256;
 
     event LogRebase(uint256 indexed epoch, uint256 totalSupply);
 
-    string public _name = "Ring";
-    string public _symbol = "RING";
+    string public _name = "Orb";
+    string public _symbol = "ORB";
     uint8 public _decimals = 5;
 
     IPancakeSwapPair public pairContract;
@@ -433,11 +433,11 @@ contract RingContract is ERC20Detailed, Ownable {
 
     uint256 public liquidityFee = 40;
     uint256 public treasuryFee = 25;
-    uint256 public ringRiskFreeFundFee = 50;
+    uint256 public orbRiskFreeFundFee = 50;
     uint256 public sellFee = 20;
     uint256 public supplyControlFee = 25;
     uint256 public totalFee =
-        liquidityFee.add(treasuryFee).add(ringRiskFreeFundFee).add(
+        liquidityFee.add(treasuryFee).add(orbRiskFreeFundFee).add(
             supplyControlFee
         );
     uint256 public feeDenominator = 1000;
@@ -447,7 +447,7 @@ contract RingContract is ERC20Detailed, Ownable {
 
     address public autoLiquidityFund;
     address public treasuryFund;
-    address public ringRiskFreeFund;
+    address public orbRiskFreeFund;
     address public supplyControl;
     address public pairAddress;
     bool public swapEnabled = true;
@@ -479,7 +479,7 @@ contract RingContract is ERC20Detailed, Ownable {
     mapping(address => mapping(address => uint256)) private _allowedFragments;
     mapping(address => bool) public blacklist;
 
-    constructor() ERC20Detailed("Ring", "RING", uint8(DECIMALS)) Ownable() {
+    constructor() ERC20Detailed("Orb", "ORB", uint8(DECIMALS)) Ownable() {
         router = IPancakeSwapRouter(0x10ED43C718714eb63d5aA57B78B54704E256024E); 
         pair = IPancakeSwapFactory(router.factory()).createPair(
             router.WETH(),
@@ -488,7 +488,7 @@ contract RingContract is ERC20Detailed, Ownable {
       
         autoLiquidityFund = 0xAFeF14FCFA2eE825C1Cd97388C3f55647eB380E1;
         treasuryFund = 0xd109372643248e084fFF06535192E5613A708398;
-        ringRiskFreeFund = 0x2FFB7Aa664F8656822f6fd2218c79B64202d47aD;
+        orbRiskFreeFund = 0x2FFB7Aa664F8656822f6fd2218c79B64202d47aD;
         supplyControl = 0xA8B02396920388b926728B3646A27be4a2c66B76;
 
         _allowedFragments[address(this)][address(router)] = uint256(-1);
@@ -641,7 +641,7 @@ contract RingContract is ERC20Detailed, Ownable {
             gonAmount.div(feeDenominator).mul(supplyControlFee)
         );
         _gonBalances[address(this)] = _gonBalances[address(this)].add(
-            gonAmount.div(feeDenominator).mul(_treasuryFee.add(ringRiskFreeFundFee))
+            gonAmount.div(feeDenominator).mul(_treasuryFee.add(orbRiskFreeFundFee))
         );
         _gonBalances[autoLiquidityFund] = _gonBalances[autoLiquidityFund].add(
             gonAmount.div(feeDenominator).mul(liquidityFee)
@@ -722,13 +722,13 @@ contract RingContract is ERC20Detailed, Ownable {
 
         (bool success, ) = payable(treasuryFund).call{
             value: amountETHToTreasuryAndRRFF.mul(treasuryFee).div(
-                treasuryFee.add(ringRiskFreeFundFee)
+                treasuryFee.add(orbRiskFreeFundFee)
             ),
             gas: 30000
         }("");
-        (success, ) = payable(ringRiskFreeFund).call{
-            value: amountETHToTreasuryAndRRFF.mul(ringRiskFreeFundFee).div(
-                treasuryFee.add(ringRiskFreeFundFee)
+        (success, ) = payable(orbRiskFreeFund).call{
+            value: amountETHToTreasuryAndRRFF.mul(orbRiskFreeFundFee).div(
+                treasuryFee.add(orbRiskFreeFundFee)
             ),
             gas: 30000
         }("");
@@ -736,7 +736,7 @@ contract RingContract is ERC20Detailed, Ownable {
 
     function withdrawAllToTreasury() external swapping onlyOwner {
         uint256 amountToSwap = _gonBalances[address(this)].div(_gonsPerFragment);
-        require( amountToSwap > 0,"There is no RING token deposited in token contract");
+        require( amountToSwap > 0,"There is no ORB token deposited in token contract");
         address[] memory path = new address[](2);
         path[0] = address(this);
         path[1] = router.WETH();
@@ -876,12 +876,12 @@ contract RingContract is ERC20Detailed, Ownable {
     function setFeeReceivers(
         address _autoLiquidityFund,
         address _treasuryFund,
-        address _ringRiskFreeFund,
+        address _orbRiskFreeFund,
         address _supplyControl
     ) external onlyOwner {
         autoLiquidityFund = _autoLiquidityFund;
         treasuryFund = _treasuryFund;
-        ringRiskFreeFund = _ringRiskFreeFund;
+        orbRiskFreeFund = _orbRiskFreeFund;
         supplyControl = _supplyControl;
     }
 
